@@ -1,6 +1,6 @@
 import re
 from runner import run_review
-from github import get_pr_diff
+from github import get_pr_diff, handle_confirm
 from rich import print
 
 def parse_prs(text):
@@ -34,6 +34,7 @@ def main():
 
         print("\n[bold green]Summary:[/bold green]")
         print(result.get("summary"))
+        print("\nRAW OUTPUT:\n", result)
 
         print("\n[bold red]Issues:[/bold red]")
         for i, issue in enumerate(result.get("issues", []), 1):
@@ -57,7 +58,12 @@ def main():
 
         elif cmd == "confirm":
             confirmed = True
-            print("[green]Confirmed. Ready to send to GitHub (next step).[/green]")
+
+            print("\nPosting review to GitHub...")
+
+            handle_confirm(prs[0], result)
+
+            print("Done ✅")
 
         elif cmd == "cancel":
             print("[red]Cancelled[/red]")

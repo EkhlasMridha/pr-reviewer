@@ -5,50 +5,69 @@ def create_tasks(diff, instructions, agents):
 
     analyze = Task(
         description=f"""
-Analyze PR diff:
+Analyze this PR diff:
 
 {diff}
 
 User instructions:
 {instructions}
 
-Find risky changes and important logic.
+Identify:
+- risky changes
+- important logic
+- potential bugs
 """,
+        expected_output="Clear explanation of risky and important code changes",
         agent=diff_analyzer,
     )
 
     review = Task(
         description=f"""
-Review code strictly following:
-{instructions}
+Review the code.
 
-Return issues with:
-- file
-- line
-- severity (low, medium, high)
-- comment
-- suggestion
+STRICT RULES:
+- Follow user instructions: {instructions}
+- Ignore style unless explicitly asked
+- Focus on bugs, performance, and correctness
+
+Return structured issues.
 """,
-        agent=review,
+        expected_output="List of issues with file, line, severity, comment, suggestion",
+        agent=reviewer,
     )
 
     format_task = Task(
         description="""
-Return ONLY JSON:
+    You are a STRICT JSON generator.
 
-{
-  "summary": "text",
-  "issues": [
+    Return ONLY valid JSON.
+    NO markdown.
+    NO explanation.
+    NO extra text.
+
+    If you fail, output empty JSON:
+
     {
-      "file": "",
-      "line": 0,
-      "severity": "",
-      "comment": "",
-      "suggestion": ""
+      "summary": "",
+      "issues": []
     }
-  ]
-}
-""",
+
+    FORMAT:
+
+    {
+      "summary": "string",
+      "issues": [
+        {
+          "file": "string",
+          "line": number,
+          "severity": "low|medium|high",
+          "comment": "string",
+          "suggestion": "string"
+        }
+      ]
+    }
+    """,
+        expected_output="Valid JSON only",
         agent=formatter,
     )
 

@@ -1,12 +1,10 @@
-from crewai import Agent
-from crewai import LLM
+from crewai import Agent, LLM
 import os
 
 def create_llm():
     return LLM(
-        model=os.getenv("MODEL_NAME", "grok-2-latest"),
-        base_url=os.getenv("OPENAI_BASE_URL"),
-        api_key=os.getenv("OPENAI_API_KEY"),
+        model=os.getenv("MODEL_NAME", "gemini-1.5-flash"),
+        api_key=os.getenv("GOOGLE_API_KEY"),
         temperature=0.2,
     )
 
@@ -31,8 +29,8 @@ def create_agents():
 
     formatter = Agent(
         role="JSON Formatter",
-        goal="Return strictly valid JSON output",
-        backstory="Strict formatter",
+        goal="Return strict JSON output",
+        backstory="Strict output generator",
         llm=llm,
         verbose=False
     )
