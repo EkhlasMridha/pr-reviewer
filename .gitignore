@@ -1,0 +1,4 @@
+./program-env
+./program-env/*
+.env
+__pycache__/*
